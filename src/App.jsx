@@ -5,6 +5,9 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import CategoryProducts from './pages/CategoryProducts';
+import Login from './pages/Login';
+import BecomeSeller from './pages/BecomeSeller';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -17,8 +20,11 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/category/:categoryName" element={<CategoryProducts />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/become-seller" element={<BecomeSeller />} />
             </Routes>
           </main>
           <Footer />

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Smartphone, Shirt, ShoppingBasket, Home as HomeIcon, Sparkles, ToyBrick, Dumbbell, MonitorPlay, BookOpen } from 'lucide-react';
 
 const categories = [
@@ -21,22 +22,23 @@ export default function CategoryGrid() {
           {categories.map((cat, i) => {
             const Icon = cat.icon;
             return (
-              <motion.div
-                key={cat.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ y: -5, scale: 1.05 }}
-                className="flex flex-col items-center gap-3 cursor-pointer min-w-[80px] group perspective-1000"
-              >
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center ${cat.color} transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(0,0,0,0.1)] group-hover:rotate-y-12 preserve-3d`}>
-                  <Icon className="w-8 h-8 translate-z-10" />
-                </div>
-                <span className="font-medium text-sm text-gray-700 group-hover:text-brand-blue transition-colors text-center">
-                  {cat.name}
-                </span>
-              </motion.div>
+              <Link to={`/category/${cat.name.toLowerCase()}`} key={cat.name}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  className="flex flex-col items-center gap-3 cursor-pointer min-w-[80px] group perspective-1000"
+                >
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center ${cat.color} transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(0,0,0,0.1)] group-hover:rotate-y-12 preserve-3d`}>
+                    <Icon className="w-8 h-8 translate-z-10" />
+                  </div>
+                  <span className="font-medium text-sm text-gray-700 group-hover:text-brand-blue transition-colors text-center">
+                    {cat.name}
+                  </span>
+                </motion.div>
+              </Link>
             );
           })}
         </div>

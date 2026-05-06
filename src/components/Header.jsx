@@ -68,7 +68,8 @@ export default function Header() {
 
           {/* Right Nav */}
           <div className="flex items-center gap-2 sm:gap-6">
-            <button 
+            <Link
+              to="/login"
               className={`hidden md:flex items-center gap-1 font-medium text-sm px-3 py-2 rounded-lg transition-colors ${
                 isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
               }`}
@@ -76,7 +77,7 @@ export default function Header() {
               <User className="h-5 w-5" />
               <span>Login</span>
               <ChevronDown className="h-4 w-4" />
-            </button>
+            </Link>
 
             <Link 
               to="/cart"
@@ -98,7 +99,8 @@ export default function Header() {
               )}
             </Link>
 
-            <button 
+            <Link
+              to="/become-seller"
               className={`hidden lg:flex items-center gap-1 font-medium text-sm px-4 py-2 rounded-lg transition-all ${
                 isScrolled 
                   ? 'border border-gray-200 text-gray-700 hover:bg-gray-50' 
@@ -106,7 +108,7 @@ export default function Header() {
               }`}
             >
               Become a Seller
-            </button>
+            </Link>
           </div>
         </div>
 

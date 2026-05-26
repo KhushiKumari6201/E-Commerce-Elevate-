@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star, Shield, Truck, RotateCcw, Heart, Share2, ShoppingCart, Zap } from 'lucide-react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { allProducts } from '../data/products';
 
@@ -13,6 +13,26 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
+  const navigate = useNavigate();
+
+  const handleBuyNow = () => {
+    navigate('/checkout', {
+      state: {
+        checkoutItems: [{
+          id: product.id,
+          name: product.name,
+          brand: product.brand,
+          price: product.price,
+          mrp: product.mrp,
+          discount: product.discount,
+          image: product.image,
+          category: product.category,
+          quantity: quantity,
+          selectedColor: activeColor
+        }]
+      }
+    });
+  };
 
   useEffect(() => {
     if (product) {
@@ -153,7 +173,10 @@ export default function ProductDetail() {
                   </>
                 )}
               </button>
-              <button className="flex-1 bg-brand-orange hover:bg-orange-600 text-white font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors">
+              <button 
+                onClick={handleBuyNow}
+                className="flex-1 bg-brand-orange hover:bg-orange-600 text-white font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors"
+              >
                 <Zap className="w-6 h-6 fill-current" /> Buy Now
               </button>
             </div>

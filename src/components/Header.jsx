@@ -4,6 +4,76 @@ import { ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 
+const navCategories = [
+  {
+    label: 'Electronics',
+    path: '/category/electronics',
+    items: [
+      { label: 'Mobiles & Tablets', path: '/category/electronics' },
+      { label: 'Laptops & Computers', path: '/category/electronics' },
+      { label: 'Cameras & Accessories', path: '/category/electronics' },
+      { label: 'Headphones & Speakers', path: '/category/electronics' },
+      { label: 'Smartwatches', path: '/category/electronics' },
+    ],
+  },
+  {
+    label: 'Fashion',
+    path: '/category/fashion',
+    items: [
+      { label: 'Men\'s Clothing', path: '/category/fashion' },
+      { label: 'Women\'s Clothing', path: '/category/fashion' },
+      { label: 'Footwear', path: '/category/fashion' },
+      { label: 'Sunglasses & Eyewear', path: '/category/fashion' },
+      { label: 'Accessories & Bags', path: '/category/fashion' },
+    ],
+  },
+  {
+    label: 'Home & Furniture',
+    path: '/category/home',
+    items: [
+      { label: 'Sofas & Seating', path: '/category/home' },
+      { label: 'Beds & Mattresses', path: '/category/home' },
+      { label: 'Kitchen & Dining', path: '/category/home' },
+      { label: 'Decor & Lighting', path: '/category/home' },
+      { label: 'Storage & Organisation', path: '/category/home' },
+    ],
+  },
+  {
+    label: 'Appliances',
+    path: '/category/appliances',
+    items: [
+      { label: 'Air Conditioners', path: '/category/appliances' },
+      { label: 'Washing Machines', path: '/category/appliances' },
+      { label: 'Refrigerators', path: '/category/appliances' },
+      { label: 'Microwaves & OTG', path: '/category/appliances' },
+      { label: 'Air Fryers', path: '/category/appliances' },
+    ],
+  },
+  {
+    label: 'Beauty, Toys & More',
+    path: '/category/beauty',
+    items: [
+      { label: 'Skincare & Serums', path: '/category/beauty' },
+      { label: 'Makeup & Lipsticks', path: '/category/beauty' },
+      { label: 'Perfumes & Fragrances', path: '/category/beauty' },
+      { label: 'Toys & Games', path: '/category/toys' },
+      { label: 'Sports Equipment', path: '/category/sports' },
+    ],
+  },
+  {
+    label: 'Mobiles',
+    path: '/category/electronics',
+    items: [
+      { label: 'iPhones', path: '/category/electronics' },
+      { label: 'Samsung Galaxy', path: '/category/electronics' },
+      { label: 'Budget Phones', path: '/category/electronics' },
+      { label: 'Refurbished Phones', path: '/category/electronics' },
+      { label: 'Mobile Accessories', path: '/category/electronics' },
+    ],
+  },
+];
+
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
@@ -112,7 +182,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Category Nav - Only show on desktop when scrolled, or as sub-header */}
+        {/* Category Nav */}
         <AnimatePresence>
           {!isScrolled && (
             <motion.nav 
@@ -121,29 +191,37 @@ export default function Header() {
               exit={{ height: 0, opacity: 0 }}
               className="hidden lg:flex items-center justify-between pt-4 pb-1"
             >
-              {['Electronics', 'Fashion', 'Home & Furniture', 'Appliances', 'Beauty, Toys & More', 'Mobiles'].map((cat, i) => (
+              {navCategories.map((cat, i) => (
                 <div 
-                  key={cat}
+                  key={cat.label}
                   className="relative group"
                   onMouseEnter={() => setShowMegaMenu(i)}
                   onMouseLeave={() => setShowMegaMenu(null)}
                 >
-                  <button className="flex items-center gap-1 text-white/90 hover:text-white font-medium text-sm py-2">
-                    {cat}
+                  <Link
+                    to={cat.path}
+                    className="flex items-center gap-1 text-white/90 hover:text-white font-medium text-sm py-2"
+                  >
+                    {cat.label}
                     <ChevronDown className="h-3 w-3" />
-                  </button>
+                  </Link>
                   
-                  {/* Simple Mega Menu Dropdown */}
                   {showMegaMenu === i && (
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-3d-hover py-2 z-50 text-brand-navy"
+                      className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] py-3 z-50 text-brand-navy border border-gray-100"
                     >
-                      {['View All', 'Trending', 'New Arrivals'].map(item => (
-                        <a href="#" key={item} className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-blue transition-colors">
-                          {item}
-                        </a>
+                      <p className="px-4 py-1 text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">{cat.label}</p>
+                      {cat.items.map(({ label, path }) => (
+                        <Link
+                          to={path}
+                          key={label}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-brand-navy/5 hover:text-brand-blue transition-colors"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-brand-yellow flex-shrink-0" />
+                          {label}
+                        </Link>
                       ))}
                     </motion.div>
                   )}

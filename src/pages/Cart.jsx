@@ -1,10 +1,19 @@
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { Trash2, Plus, Minus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const navigate = useNavigate();
+
+  const handlePlaceOrder = () => {
+    navigate('/checkout', {
+      state: {
+        checkoutItems: cartItems
+      }
+    });
+  };
 
   const totalAmount = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
@@ -113,7 +122,10 @@ export default function Cart() {
                 </div>
               </div>
               
-              <button className="w-full bg-brand-orange hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-colors shadow-sm text-lg">
+              <button 
+                onClick={handlePlaceOrder}
+                className="w-full bg-brand-orange hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-colors shadow-sm text-lg"
+              >
                 Place Order
               </button>
             </div>

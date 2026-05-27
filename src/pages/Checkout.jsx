@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, MapPin, CreditCard, Lock, Smartphone, User, Plus, 
   Trash2, PlusCircle, MinusCircle, AlertCircle, ShoppingBag, 
-  RefreshCw, ShieldCheck, HelpCircle, Truck
+  RefreshCw, ShieldCheck, HelpCircle, Truck, Package, Clock, 
+  Home, CheckCircle2, ArrowLeft, Phone, Mail
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -38,16 +39,16 @@ export default function Checkout() {
   }, [location.state, cartItems]);
 
   // Steps active state: 1 (Login), 2 (Address), 3 (Order Summary), 4 (Payment)
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(2);
   const [completedSteps, setCompletedSteps] = useState({
-    1: false,
+    1: true,
     2: false,
     3: false,
     4: false
   });
 
-  // Step 1: Login State
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Step 1: Login State - User is automatically logged in (no login form)
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [loginEmailOrPhone, setLoginEmailOrPhone] = useState('khushi@elevate.com');
   const [loginPassword, setLoginPassword] = useState('password123');
   const [loginError, setLoginError] = useState('');
@@ -108,6 +109,7 @@ export default function Checkout() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [successOrderId, setSuccessOrderId] = useState('');
   const [confettiElements, setConfettiElements] = useState([]);
+  const [showTracking, setShowTracking] = useState(false);
 
   // Auto-login user if they click continue
   const handleLoginSubmit = (e) => {
@@ -272,6 +274,206 @@ export default function Checkout() {
 
   // Render Order Success Screen
   if (isSuccess) {
+    // Tracking Status Component
+    const TrackingView = () => {
+      const trackingSteps = [
+        { 
+          id: 1, 
+          status: 'Order Confirmed', 
+          description: 'Your order has been confirmed.',
+          time: 'Just now',
+          completed: true,
+          icon: CheckCircle2
+        },
+        { 
+          id: 2, 
+          status: 'Processing', 
+          description: 'Your order is being prepared for shipment.',
+          time: 'Expected in 1 hour',
+          completed: false,
+          icon: Package
+        },
+        { 
+          id: 3, 
+          status: 'Shipped', 
+          description: 'Your order has been picked up by the courier.',
+          time: 'Expected tomorrow',
+          completed: false,
+          icon: Truck
+        },
+        { 
+          id: 4, 
+          status: 'Out for Delivery', 
+          description: 'Your order is on the way.',
+          time: 'Expected May 28th',
+          completed: false,
+          icon: Home
+        },
+        { 
+          id: 5, 
+          status: 'Delivered', 
+          description: 'Your order has been delivered.',
+          time: 'Expected by 9 PM',
+          completed: false,
+          icon: CheckCircle2
+        }
+      ];
+
+      return (
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+          <style dangerouslySetInnerHTML={{ __html: confettiStyle }} />
+          
+          {/* Confetti Elements */}
+          <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+            {confettiElements.map(c => (
+              <div
+                key={c.id}
+                className="absolute animate-fall"
+                style={{
+                  left: `${c.left}%`,
+                  top: `-20px`,
+                  animationDelay: `${c.delay}s`,
+                  backgroundColor: c.color,
+                  width: `${c.size}px`,
+                  height: `${c.size * 2}px`,
+                  borderRadius: '2px',
+                  transform: `rotate(${c.rotation}deg)`,
+                  opacity: 0.8
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Tracking Card */}
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', damping: 15 }}
+            className="bg-white w-full max-w-3xl rounded-3xl shadow-3d overflow-hidden border border-gray-100 z-20"
+          >
+            {/* Header with Back Button */}
+            <div className="bg-[#2874F0] p-6 text-white flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setShowTracking(false)}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div>
+                  <h2 className="text-2xl font-heading font-extrabold">Track Your Order</h2>
+                  <p className="text-white/80 text-sm mt-1">Order ID: {successOrderId}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Tracking Timeline */}
+            <div className="p-8">
+              {/* Order Summary */}
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-gray-700">Estimated Delivery</p>
+                  <p className="text-xl font-bold text-brand-navy">Thursday, May 28th by 9 PM</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-gray-700">Delivery Address</p>
+                  <p className="text-sm font-bold text-brand-navy">{selectedAddress.locality}, {selectedAddress.city}</p>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div className="space-y-0">
+                {trackingSteps.map((step, index) => {
+                  const StepIcon = step.icon;
+                  const isLast = index === trackingSteps.length - 1;
+                  
+                  return (
+                    <div key={step.id} className="flex gap-4 pb-8 relative">
+                      {/* Vertical Line */}
+                      {!isLast && (
+                        <div 
+                          className={`absolute left-8 top-16 bottom-0 w-0.5 ${
+                            step.completed ? 'bg-green-500' : 'bg-gray-200'
+                          }`}
+                        />
+                      )}
+                      
+                      {/* Icon Circle */}
+                      <div className="flex-shrink-0 relative z-10">
+                        <div 
+                          className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-lg shadow-md border-4 ${
+                            step.completed 
+                              ? 'bg-green-500 text-white border-white' 
+                              : 'bg-white text-gray-400 border-gray-300'
+                          }`}
+                        >
+                          <StepIcon className="w-8 h-8" />
+                        </div>
+                      </div>
+
+                      {/* Step Content */}
+                      <div className="flex-1 pt-1">
+                        <h3 className={`text-lg font-bold mb-1 ${
+                          step.completed ? 'text-gray-900' : 'text-gray-400'
+                        }`}>
+                          {step.status}
+                        </h3>
+                        <p className={`text-sm mb-2 ${
+                          step.completed ? 'text-gray-600' : 'text-gray-400'
+                        }`}>
+                          {step.description}
+                        </p>
+                        <p className={`text-xs font-semibold ${
+                          step.completed ? 'text-green-600' : 'text-brand-blue'
+                        }`}>
+                          {step.time}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Contact Support */}
+              <div className="bg-gray-50 rounded-xl p-4 mt-8 border border-gray-100">
+                <p className="text-sm font-semibold text-gray-700 mb-3">Need Help?</p>
+                <div className="space-y-2 text-sm">
+                  <a href="tel:1800123456" className="flex items-center gap-2 text-[#2874F0] hover:underline font-medium">
+                    <Phone className="w-4 h-4" /> Call Customer Support: 1800-123-456
+                  </a>
+                  <a href="mailto:support@elevate.com" className="flex items-center gap-2 text-[#2874F0] hover:underline font-medium">
+                    <Mail className="w-4 h-4" /> Email: support@elevate.com
+                  </a>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <button 
+                  onClick={() => setShowTracking(false)}
+                  className="flex-1 border-2 border-[#2874F0] text-[#2874F0] font-bold py-3 px-6 rounded-xl hover:bg-blue-50 transition-colors"
+                >
+                  Back to Order
+                </button>
+                <Link 
+                  to="/" 
+                  className="flex-1 bg-[#FB641B] hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-center"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      );
+    };
+
+    // If tracking view is active, show tracking
+    if (showTracking) {
+      return <TrackingView />;
+    }
+
+    // Otherwise show order summary
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <style dangerouslySetInnerHTML={{ __html: confettiStyle }} />
@@ -396,11 +598,17 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* CTA */}
-            <div className="pt-4 border-t border-gray-100 text-center">
+            {/* CTA - Updated with Track Order button */}
+            <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-center">
+              <button 
+                onClick={() => setShowTracking(true)}
+                className="bg-[#2874F0] hover:bg-blue-700 text-white font-bold text-base px-10 py-4 rounded-xl shadow-md transition-colors flex-1 sm:flex-none"
+              >
+                Track Order
+              </button>
               <Link 
                 to="/" 
-                className="inline-block bg-[#FB641B] hover:bg-orange-600 text-white font-bold text-lg px-12 py-4 rounded-xl shadow-md transition-colors"
+                className="bg-[#FB641B] hover:bg-orange-600 text-white font-bold text-base px-12 py-4 rounded-xl shadow-md transition-colors text-center flex-1 sm:flex-none"
               >
                 Continue Shopping
               </Link>
@@ -447,96 +655,26 @@ export default function Checkout() {
             {/* Left Column: Accordion Checkout Flow */}
             <div className="w-full lg:w-8/12 space-y-4">
               
-              {/* STEP 1: LOGIN */}
+              {/* STEP 1: LOGIN - HIDDEN (Auto-logged in) */}
               <div className="bg-white shadow-sm border border-gray-200 rounded overflow-hidden">
-                {/* Step Header */}
+                {/* Step Header - Showing completed status */}
                 <div 
-                  onClick={() => handleStepClick(1)}
-                  className={`px-6 py-4 flex items-center justify-between cursor-pointer ${
-                    activeStep === 1 ? 'bg-[#2874F0] text-white' : 'bg-white text-gray-500'
-                  }`}
+                  className={`px-6 py-4 flex items-center justify-between cursor-default bg-gray-50 text-gray-500`}
                 >
                   <div className="flex items-center gap-4">
-                    <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
-                      activeStep === 1 ? 'bg-white text-[#2874F0]' : 'bg-gray-100 text-[#2874F0]'
-                    }`}>
-                      1
+                    <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs bg-green-100 text-green-600`}>
+                      <Check className="w-4 h-4 stroke-[3px]" />
                     </span>
                     <div className="text-left">
-                      <span className={`font-bold text-sm uppercase ${activeStep === 1 ? 'text-white' : 'text-gray-900'}`}>
-                        Login {isLoggedIn && <Check className="inline-block w-4 h-4 ml-1 text-green-600 stroke-[3px]" />}
+                      <span className={`font-bold text-sm uppercase text-gray-700`}>
+                        Login
                       </span>
-                      {!completedSteps[1] ? (
-                        <p className={`text-xs ${activeStep === 1 ? 'text-white/80' : 'text-gray-400'}`}>Sign in to complete order</p>
-                      ) : (
-                        <p className="text-xs text-gray-700 mt-0.5 font-semibold">
-                          Khushi Kumari <span className="text-gray-400 font-normal">|</span> +919876543210
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  {completedSteps[1] && activeStep !== 1 && (
-                    <button className="border border-gray-200 text-[#2874F0] font-bold text-xs px-6 py-2 rounded bg-white hover:bg-gray-50 transition-colors">
-                      CHANGE
-                    </button>
-                  )}
-                </div>
-
-                {/* Step Body */}
-                {activeStep === 1 && (
-                  <div className="p-6 border-t border-gray-100 flex flex-col md:flex-row gap-8 justify-between bg-white">
-                    <form onSubmit={handleLoginSubmit} className="max-w-md w-full space-y-4">
-                      {loginError && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4" /> {loginError}
-                        </div>
-                      )}
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-1.5">Email or Mobile Number</label>
-                        <input 
-                          type="text"
-                          value={loginEmailOrPhone}
-                          onChange={(e) => setLoginEmailOrPhone(e.target.value)}
-                          className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-[#2874F0] rounded"
-                          placeholder="Enter your email or phone number"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-1.5">Password</label>
-                        <input 
-                          type="password"
-                          value={loginPassword}
-                          onChange={(e) => setLoginPassword(e.target.value)}
-                          className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-[#2874F0] rounded"
-                          placeholder="Enter password"
-                        />
-                      </div>
-                      <p className="text-xs text-gray-400">
-                        By continuing, you agree to Elevate's <Link to="#" className="text-[#2874F0] hover:underline">Terms of Use</Link> and <Link to="#" className="text-[#2874F0] hover:underline">Privacy Policy</Link>.
+                      <p className="text-xs text-gray-700 mt-0.5 font-semibold">
+                        Khushi Kumari <span className="text-gray-400 font-normal">|</span> khushi@elevate.com
                       </p>
-                      <button 
-                        type="submit"
-                        className="bg-[#FB641B] hover:bg-orange-600 text-white font-bold py-3 px-10 rounded text-sm transition-colors shadow-sm"
-                      >
-                        CONTINUE TO CHECKOUT
-                      </button>
-                    </form>
-                    <div className="hidden md:block max-w-[280px]">
-                      <h4 className="font-bold text-sm text-brand-navy mb-4">Advantages of Logged In</h4>
-                      <ul className="space-y-3 text-xs text-gray-500">
-                        <li className="flex gap-2">
-                          <Check className="w-4 h-4 text-green-600 flex-shrink-0" /> Easily Track Orders, Hassle free Returns
-                        </li>
-                        <li className="flex gap-2">
-                          <Check className="w-4 h-4 text-green-600 flex-shrink-0" /> Get Relevant Alerts and Recommendation
-                        </li>
-                        <li className="flex gap-2">
-                          <Check className="w-4 h-4 text-green-600 flex-shrink-0" /> Wishlist, Ratings, Reviews and more
-                        </li>
-                      </ul>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* STEP 2: DELIVERY ADDRESS */}

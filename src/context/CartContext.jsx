@@ -5,25 +5,35 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, selectedColor = null) => {
     setCartItems(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const cartItemId = selectedColor ? `${product.id}-${selectedColor.name}` : product.id;
+      const existing = prev.find(item => item.cartItemId === cartItemId);
+      
       if (existing) {
         return prev.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+          item.cartItemId === cartItemId ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
-      return [...prev, { ...product, quantity }];
+      
+      const displayImage = selectedColor?.image || product.image;
+      return [...prev, { 
+        ...product, 
+        cartItemId, 
+        selectedColor, 
+        quantity,
+        image: displayImage
+      }];
     });
   };
 
-  const removeFromCart = (id) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+  const removeFromCart = (cartItemId) => {
+    setCartItems(prev => prev.filter(item => item.cartItemId !== cartItemId));
   };
 
-  const updateQuantity = (id, quantity) => {
+  const updateQuantity = (cartItemId, quantity) => {
     setCartItems(prev => prev.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+      item.cartItemId === cartItemId ? { ...item, quantity: Math.max(1, quantity) } : item
     ));
   };
 

@@ -986,7 +986,7 @@ export default function Checkout() {
                                   if (isDirectBuy) {
                                     setCheckoutItems([{ ...item, quantity: newQty }]);
                                   } else {
-                                    updateQuantity(item.id, newQty);
+                                    updateQuantity(item.cartItemId, newQty);
                                   }
                                 }}
                                 className="text-gray-400 hover:text-[#2874F0] p-1"
@@ -1000,7 +1000,7 @@ export default function Checkout() {
                                   if (isDirectBuy) {
                                     setCheckoutItems([{ ...item, quantity: newQty }]);
                                   } else {
-                                    updateQuantity(item.id, newQty);
+                                    updateQuantity(item.cartItemId, newQty);
                                   }
                                 }}
                                 className="text-gray-400 hover:text-[#2874F0] p-1"

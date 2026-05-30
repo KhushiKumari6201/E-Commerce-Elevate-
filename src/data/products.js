@@ -12,9 +12,9 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Titanium Black', class: 'bg-zinc-800' },
-      { name: 'Titanium Gray', class: 'bg-gray-400' },
-      { name: 'Titanium Blue', class: 'bg-slate-700' }
+      { name: 'Titanium Black', class: 'bg-zinc-800', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Titanium Gray', class: 'bg-gray-400', image: 'https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Titanium Blue', class: 'bg-slate-700', image: 'https://images.unsplash.com/photo-1606933248051-5ce98adc4cf5?auto=format&fit=crop&q=80&w=400', isAvailable: false }
     ]
   },
   {
@@ -30,9 +30,9 @@ export const allProducts = [
     assured: true,
     category: 'Fashion',
     colors: [
-      { name: 'Light Blue', class: 'bg-blue-300' },
-      { name: 'Classic Indigo', class: 'bg-blue-700' },
-      { name: 'Washed Black', class: 'bg-zinc-700' }
+      { name: 'Light Blue', class: 'bg-blue-300', image: 'https://images.unsplash.com/photo-1578932750294-708afbd1df1d?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Classic Indigo', class: 'bg-blue-700', image: 'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Washed Black', class: 'bg-zinc-700', image: 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&q=80&w=400', isAvailable: false }
     ]
   },
   {
@@ -48,9 +48,9 @@ export const allProducts = [
     assured: false,
     category: 'Home',
     colors: [
-      { name: 'Emerald Green', class: 'bg-emerald-700' },
-      { name: 'Navy Blue', class: 'bg-blue-900' },
-      { name: 'Blush Pink', class: 'bg-rose-300' }
+      { name: 'Emerald Green', class: 'bg-emerald-700', image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Navy Blue', class: 'bg-blue-900', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Blush Pink', class: 'bg-rose-300', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -66,7 +66,7 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Matte Black', class: 'bg-black' }
+      { name: 'Matte Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -82,9 +82,9 @@ export const allProducts = [
     assured: true,
     category: 'Fashion',
     colors: [
-      { name: 'Gold/Green', class: 'bg-yellow-600' },
-      { name: 'Black/Grey', class: 'bg-gray-800' },
-      { name: 'Silver/Blue', class: 'bg-slate-400' }
+      { name: 'Gold/Green', class: 'bg-yellow-600', image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Black/Grey', class: 'bg-gray-800', image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Silver/Blue', class: 'bg-slate-400', image: 'https://images.unsplash.com/photo-1508296695146-367180069918?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -100,8 +100,8 @@ export const allProducts = [
     assured: true,
     category: 'Home',
     colors: [
-      { name: 'Nickel/Gold', class: 'bg-yellow-500' },
-      { name: 'Iron/Red', class: 'bg-red-600' }
+      { name: 'Nickel/Gold', class: 'bg-yellow-500', image: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Iron/Red', class: 'bg-red-600', image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -117,8 +117,8 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Platinum Silver', class: 'bg-gray-300' },
-      { name: 'Frost White', class: 'bg-gray-100' }
+      { name: 'Platinum Silver', class: 'bg-gray-300', image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Frost White', class: 'bg-gray-100', image: 'https://images.unsplash.com/photo-1588405748409-a6b1b8a7ae8b?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -134,9 +134,9 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Midnight Black', class: 'bg-black' },
-      { name: 'Ocean Blue', class: 'bg-blue-600' },
-      { name: 'Camo', class: 'bg-green-800' }
+      { name: 'Midnight Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Ocean Blue', class: 'bg-blue-600', image: 'https://images.unsplash.com/photo-1589003077984-894e133da97f?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Camo', class: 'bg-green-800', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -152,9 +152,9 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Black', class: 'bg-black' },
-      { name: 'Silver', class: 'bg-gray-300' },
-      { name: 'Midnight Blue', class: 'bg-blue-900' }
+      { name: 'Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Silver', class: 'bg-gray-300', image: 'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Midnight Blue', class: 'bg-blue-900', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -170,8 +170,8 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Silver', class: 'bg-gray-300' },
-      { name: 'Black', class: 'bg-black' }
+      { name: 'Silver', class: 'bg-gray-300', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400' },
+      { name: 'Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400' }
     ]
   },
   {
@@ -187,9 +187,9 @@ export const allProducts = [
     assured: true,
     category: 'Fashion',
     colors: [
-      { name: 'Triple White', class: 'bg-white' },
-      { name: 'Triple Black', class: 'bg-black' },
-      { name: 'White/Red', class: 'bg-red-500' }
+      { name: 'Triple White', class: 'bg-white', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Triple Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'White/Red', class: 'bg-red-500', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400', isAvailable: false }
     ]
   },
   {
@@ -409,8 +409,8 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Graphite', class: 'bg-gray-800' },
-      { name: 'Pale Gray', class: 'bg-gray-200' }
+      { name: 'Graphite', class: 'bg-gray-800', image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Pale Gray', class: 'bg-gray-200', image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=400', isAvailable: false }
     ]
   },
   {
@@ -426,8 +426,8 @@ export const allProducts = [
     assured: true,
     category: 'Fashion',
     colors: [
-      { name: 'Dark Wash', class: 'bg-blue-900' },
-      { name: 'Light Wash', class: 'bg-blue-400' }
+      { name: 'Dark Wash', class: 'bg-blue-900', image: 'https://images.unsplash.com/photo-1542272604-780c8d5215fa?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Light Wash', class: 'bg-blue-400', image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=400', isAvailable: true }
     ]
   },
   {

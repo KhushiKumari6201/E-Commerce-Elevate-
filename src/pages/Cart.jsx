@@ -40,7 +40,7 @@ export default function Cart() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                key={item.id} 
+                key={item.cartItemId} 
                 className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6"
               >
                 {/* Item Image */}
@@ -52,7 +52,12 @@ export default function Cart() {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-bold text-brand-navy text-lg leading-tight mb-1">{item.name}</h3>
-                    <p className="text-gray-500 text-sm mb-3">Brand: {item.brand}</p>
+                    <p className="text-gray-500 text-sm mb-1">Brand: {item.brand}</p>
+                    {item.selectedColor && (
+                      <p className="text-xs text-gray-600 mb-3 font-medium">
+                        Color: <span className="font-bold text-brand-blue">{item.selectedColor.name}</span>
+                      </p>
+                    )}
                     <div className="flex items-baseline gap-2 mb-4">
                       <span className="font-bold font-mono text-xl">₹{item.price.toLocaleString()}</span>
                       {item.mrp && item.mrp > item.price && (
@@ -66,7 +71,7 @@ export default function Cart() {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50">
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                           className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-brand-blue hover:bg-gray-100 rounded-l-lg transition-colors"
                         >
                           <Minus className="w-4 h-4" />
@@ -75,15 +80,15 @@ export default function Cart() {
                           {item.quantity}
                         </span>
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-brand-blue hover:bg-gray-100 rounded-r-lg transition-colors"
+                          onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
+                          className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#2874F0] hover:bg-gray-100 rounded-r-lg transition-colors"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
                     <button 
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => removeFromCart(item.cartItemId)}
                       className="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1 text-sm font-medium"
                     >
                       <Trash2 className="w-4 h-4" />

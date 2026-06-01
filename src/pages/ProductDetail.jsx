@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Star, Shield, Truck, RotateCcw, Heart, Share2, ShoppingCart, Zap } from 'lucide-react';
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { allProducts } from '../data/products';
 import ColorVariantPicker from '../components/ColorVariantPicker';
 
@@ -12,8 +13,10 @@ export default function ProductDetail() {
   const colorQuery = searchParams.get('color');
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   const product = allProducts.find(p => p.id === id) || allProducts[0];
+  const isWishlisted = isInWishlist(product?.id);
 
   // Helper to retrieve initial active color
   const getInitialColor = () => {
@@ -123,8 +126,12 @@ export default function ProductDetail() {
           <div className="md:w-5/12 p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-100">
             <div className="relative group cursor-crosshair overflow-hidden rounded-2xl h-[400px] flex items-center justify-center bg-white border border-gray-50">
               <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
-                <button className="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors">
-                  <Heart className="w-5 h-5" />
+                <button 
+                  onClick={() => toggleWishlist(product)}
+                  className="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors"
+                  title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                >
+                  <Heart className={`w-5 h-5 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
                 </button>
                 <button className="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center text-gray-400 hover:text-brand-blue transition-colors">
                   <Share2 className="w-5 h-5" />

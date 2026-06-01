@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X } from 'lucide-react';
+import { ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { allProducts } from '../data/products';
 
 const navCategories = [
@@ -79,6 +80,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
 
   // Search & Speech Recognition States
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,26 +96,39 @@ export default function Header() {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [successToastMessage, setSuccessToastMessage] = useState('');
 
+  // Live Camera & Gallery selection states
+  const [showCameraOptions, setShowCameraOptions] = useState(false);
+  const [showLiveCamera, setShowLiveCamera] = useState(false);
+
   const searchContainerRef = useRef(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
+  const cameraVideoRef = useRef(null);
+  const cameraStreamRef = useRef(null);
+  const cameraOptionsRef = useRef(null);
 
-  // Auto close suggestions on clicking outside search container
+  // Auto close suggestions and camera options on clicking outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
         setShowSuggestions(false);
+      }
+      if (cameraOptionsRef.current && !cameraOptionsRef.current.contains(e.target)) {
+        setShowCameraOptions(false);
       }
     };
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
-  // Cleanup speech recognition on unmount
+  // Cleanup speech recognition and camera stream on unmount
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
+      }
+      if (cameraStreamRef.current) {
+        cameraStreamRef.current.getTracks().forEach(track => track.stop());
       }
     };
   }, []);
@@ -183,9 +198,85 @@ export default function Header() {
     }
   };
 
-  const handleCameraClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+  const handleStartLiveCamera = async () => {
+    setShowLiveCamera(true);
+    
+    // Slight delay to allow video element to mount
+    setTimeout(async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } } 
+        });
+        if (cameraVideoRef.current) {
+          cameraVideoRef.current.srcObject = stream;
+        }
+        cameraStreamRef.current = stream;
+      } catch (err) {
+        console.error("Error accessing camera:", err);
+        setSpeechError('Camera access denied or unavailable. Please check permissions.');
+        setShowErrorToast(true);
+        setTimeout(() => setShowErrorToast(false), 4000);
+        setShowLiveCamera(false);
+      }
+    }, 150);
+  };
+
+  const handleStopLiveCamera = () => {
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(track => track.stop());
+      cameraStreamRef.current = null;
+    }
+    setShowLiveCamera(false);
+  };
+
+  const handleCapturePhoto = () => {
+    if (!cameraVideoRef.current) return;
+
+    try {
+      const video = cameraVideoRef.current;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const dataUrl = canvas.toDataURL('image/jpeg');
+      setCameraImagePreview(dataUrl);
+
+      // Stop camera stream instantly (turn off light)
+      handleStopLiveCamera();
+
+      // Start search scan simulator
+      setIsScanning(true);
+      setScanningStatus('uploading');
+
+      // Timeline simulation
+      setTimeout(() => {
+        setScanningStatus('detecting');
+      }, 1000);
+
+      setTimeout(() => {
+        setScanningStatus('matching');
+      }, 2000);
+
+      setTimeout(() => {
+        setIsScanning(false);
+        const matchedText = "Nike Air Force 1 '07";
+        setSearchQuery(matchedText);
+        setShowSuggestions(true);
+        
+        setSuccessToastMessage(`Found visual match for "${matchedText}"!`);
+        setShowSuccessToast(true);
+        setTimeout(() => setShowSuccessToast(false), 4000);
+      }, 3000);
+
+    } catch (err) {
+      console.error("Capture photo error:", err);
+      setSpeechError('Failed to capture photo. Please try again.');
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 4000);
+      handleStopLiveCamera();
     }
   };
 
@@ -322,19 +413,58 @@ export default function Header() {
                 <Mic className={`h-4 w-4 ${isListening ? 'animate-pulse scale-110' : ''}`} />
               </button>
 
-              {/* Camera Icon Button */}
-              <button 
-                type="button"
-                onClick={handleCameraClick}
-                className={`p-1.5 rounded-lg transition-all duration-300 ${
-                  isScrolled 
-                    ? 'text-gray-500 hover:bg-gray-200' 
-                    : 'text-brand-navy/70 hover:bg-gray-200'
-                }`}
-                title="Search by image"
-              >
-                <Camera className="h-4 w-4" />
-              </button>
+              {/* Camera Options & Icon Button Wrapper */}
+              <div ref={cameraOptionsRef} className="relative flex items-center">
+                <button 
+                  type="button"
+                  onClick={() => setShowCameraOptions(!showCameraOptions)}
+                  className={`p-1.5 rounded-lg transition-all duration-300 ${
+                    showCameraOptions 
+                      ? 'bg-brand-blue text-white shadow-sm scale-105' 
+                      : isScrolled 
+                        ? 'text-gray-500 hover:bg-gray-200' 
+                        : 'text-brand-navy/70 hover:bg-gray-200'
+                  }`}
+                  title="Search by image"
+                >
+                  <Camera className="h-4 w-4" />
+                </button>
+
+                {/* Camera Options Dropdown Menu */}
+                <AnimatePresence>
+                  {showCameraOptions && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 py-1.5 z-50 text-left"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowCameraOptions(false);
+                          if (fileInputRef.current) fileInputRef.current.click();
+                        }}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-medium"
+                      >
+                        <Image className="w-3.5 h-3.5" />
+                        Choose from Gallery
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowCameraOptions(false);
+                          handleStartLiveCamera();
+                        }}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-medium"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        Take Photo (Camera)
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Hidden file input for camera scan */}
               <input 
@@ -410,6 +540,26 @@ export default function Header() {
               <User className="h-5 w-5" />
               <span>Login</span>
               <ChevronDown className="h-4 w-4" />
+            </Link>
+
+            <Link 
+              to="/wishlist"
+              className={`relative p-2 flex items-center gap-1 rounded-lg transition-colors ${
+                isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+              }`}
+            >
+              <Heart className="h-6 w-6" />
+              <span className="hidden sm:block font-medium text-sm">Wishlist</span>
+              {wishlistCount > 0 && (
+                <motion.span 
+                  key={wishlistCount}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-0 right-0 sm:right-auto sm:left-6 -mt-1 -mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-sm"
+                >
+                  {wishlistCount}
+                </motion.span>
+              )}
             </Link>
 
             <Link 
@@ -494,6 +644,69 @@ export default function Header() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Live Camera View Modal */}
+      <AnimatePresence>
+        {showLiveCamera && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-md border border-gray-200 flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className="bg-brand-navy p-5 text-white flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Camera className="w-5 h-5 text-brand-yellow" />
+                  <h3 className="font-heading font-bold text-lg">Live Camera Capture</h3>
+                </div>
+                <button 
+                  onClick={handleStopLiveCamera}
+                  className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Camera Video Stream Panel */}
+              <div className="p-6 flex flex-col items-center gap-6">
+                <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-gray-700 shadow-md">
+                  <video 
+                    ref={cameraVideoRef} 
+                    autoPlay 
+                    playsInline 
+                    className="w-full h-full object-cover" 
+                  />
+                  {/* Subtle target box overlay */}
+                  <div className="absolute inset-8 border-2 border-dashed border-white/40 rounded-xl pointer-events-none flex items-center justify-center">
+                    <span className="text-white/20 text-xs font-bold font-heading uppercase tracking-widest text-center">Align Product Here</span>
+                  </div>
+                </div>
+
+                {/* Capture & Cancel Action buttons */}
+                <div className="flex gap-4 w-full">
+                  <button
+                    type="button"
+                    onClick={handleStopLiveCamera}
+                    className="flex-1 py-3 px-6 rounded-xl border border-gray-300 font-bold text-gray-700 hover:bg-gray-50 transition-colors text-sm"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCapturePhoto}
+                    className="flex-1 py-3 px-6 rounded-xl bg-brand-blue hover:bg-blue-600 text-white font-bold transition-colors text-sm flex items-center justify-center gap-2"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Capture Photo
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Visual Search Scanning Modal */}
       <AnimatePresence>

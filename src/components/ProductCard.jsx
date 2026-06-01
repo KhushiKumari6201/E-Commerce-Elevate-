@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Check, Heart, Star, ShoppingCart, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import ColorVariantPicker from './ColorVariantPicker';
 
 export default function ProductCard({ product, aiBadge = false }) {
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(product.id);
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
@@ -63,7 +65,7 @@ export default function ProductCard({ product, aiBadge = false }) {
       <button 
         onClick={(e) => {
           e.preventDefault();
-          setIsWishlisted(!isWishlisted);
+          toggleWishlist(product);
         }}
         className="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm"
       >

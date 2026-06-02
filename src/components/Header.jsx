@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image } from 'lucide-react';
+import { Home, ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -531,6 +531,17 @@ export default function Header() {
 
           {/* Right Nav */}
           <div className="flex items-center gap-2 sm:gap-6">
+            <Link
+              to="/"
+              className={`p-2 flex items-center gap-1 rounded-lg transition-colors ${
+                isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+              }`}
+              title="Home"
+            >
+              <Home className="h-6 w-6" />
+              <span className="hidden sm:block font-medium text-sm">Home</span>
+            </Link>
+
             <Link
               to="/login"
               className={`hidden md:flex items-center gap-1 font-medium text-sm px-3 py-2 rounded-lg transition-colors ${

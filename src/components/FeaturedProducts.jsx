@@ -9,6 +9,8 @@ import { featuredProducts as allProducts } from '../data/products';
 export default function FeaturedProducts() {
   const [activeTab, setActiveTab] = useState('All');
   const [loading, setLoading] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const filteredProducts = activeTab === 'All' 
     ? allProducts 
@@ -17,7 +19,16 @@ export default function FeaturedProducts() {
   const handleTabChange = (tab) => {
     setLoading(true);
     setActiveTab(tab);
+    setVisibleCount(8); // Reset pagination on tab change
     setTimeout(() => setLoading(false), 500); // simulate network request
+  };
+
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+    setTimeout(() => {
+      setVisibleCount(prev => prev + 8);
+      setLoadingMore(false);
+    }, 600);
   };
 
   return (
@@ -59,7 +70,7 @@ export default function FeaturedProducts() {
               </div>
             ))
           ) : (
-            filteredProducts.map((product, i) => (
+            filteredProducts.slice(0, visibleCount).map((product, i) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -70,13 +81,35 @@ export default function FeaturedProducts() {
               </motion.div>
             ))
           )}
+
+          {/* Load More Skeleton items */}
+          {!loading && loadingMore && (
+            Array(4).fill(0).map((_, i) => (
+              <div key={`skel-more-${i}`} className="bg-white rounded-2xl p-4 border border-gray-100 h-[380px] animate-pulse flex flex-col">
+                <div className="w-full pt-[100%] bg-gray-200 rounded-xl mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                <div className="mt-auto h-8 bg-gray-200 rounded w-1/3"></div>
+              </div>
+            ))
+          )}
         </div>
 
-        <div className="mt-10 text-center">
-          <button className="bg-white border-2 border-brand-navy text-brand-navy font-bold px-8 py-3 rounded-xl hover:bg-brand-navy hover:text-white transition-colors">
-            Load More Products
-          </button>
-        </div>
+        {visibleCount < filteredProducts.length ? (
+          <div className="mt-10 text-center">
+            <button 
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              className="bg-white border-2 border-brand-navy text-brand-navy font-bold px-8 py-3 rounded-xl hover:bg-brand-navy hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingMore ? 'Loading More...' : 'Load More Products'}
+            </button>
+          </div>
+        ) : (
+          <div className="mt-10 text-center text-gray-500 font-medium text-sm">
+            🎉 You have caught up with all recommended products!
+          </div>
+        )}
       </div>
     </section>
   );

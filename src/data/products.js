@@ -217,7 +217,7 @@ export const allProducts = [
     discount: 25,
     rating: 4.6,
     reviews: 1200,
-    image: '/organic_honey.png',
+    image: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Grocery',
     colors: []
@@ -231,7 +231,7 @@ export const allProducts = [
     discount: 25,
     rating: 4.9,
     reviews: 800,
-    image: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Toys',
     colors: []
@@ -245,7 +245,7 @@ export const allProducts = [
     discount: 28,
     rating: 4.5,
     reviews: 3200,
-    image: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1592656094267-764a45160876?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Sports',
     colors: []
@@ -259,7 +259,7 @@ export const allProducts = [
     discount: 33,
     rating: 4.7,
     reviews: 4500,
-    image: 'https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1585737009290-0b2c851e9e52?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Appliances',
     colors: [
@@ -303,7 +303,7 @@ export const allProducts = [
     discount: 20,
     rating: 4.7,
     reviews: 156,
-    image: '/white_bread.png',
+    image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Grocery',
     colors: []
@@ -347,7 +347,7 @@ export const allProducts = [
     discount: 20,
     rating: 4.6,
     reviews: 3200,
-    image: 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Toys',
     colors: []
@@ -361,7 +361,7 @@ export const allProducts = [
     discount: 16,
     rating: 4.8,
     reviews: 1450,
-    image: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Sports',
     colors: []
@@ -375,7 +375,7 @@ export const allProducts = [
     discount: 25,
     rating: 4.5,
     reviews: 890,
-    image: 'https://images.unsplash.com/photo-1585659722983-38ca8e9af1a0?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Appliances',
     colors: [
@@ -442,6 +442,138 @@ export const allProducts = [
     image: 'https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&q=80&w=400',
     assured: true,
     category: 'Home',
+    colors: []
+  },
+  {
+    id: 'p25',
+    name: 'Apple iPad Pro M4',
+    brand: 'Apple',
+    price: 99900,
+    mrp: 99900,
+    discount: 0,
+    rating: 4.9,
+    reviews: 850,
+    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Electronics',
+    colors: [
+      { name: 'Space Black', class: 'bg-zinc-900', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Silver', class: 'bg-gray-300', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p26',
+    name: 'Adidas Ultraboost 1.0',
+    brand: 'Adidas',
+    price: 17999,
+    mrp: 19999,
+    discount: 10,
+    rating: 4.8,
+    reviews: 4120,
+    image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Fashion',
+    colors: [
+      { name: 'Core Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Cloud White', class: 'bg-white', image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p27',
+    name: 'Nintendo Switch OLED',
+    brand: 'Nintendo',
+    price: 32999,
+    mrp: 35999,
+    discount: 8,
+    rating: 4.7,
+    reviews: 9540,
+    image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Electronics',
+    colors: [
+      { name: 'Neon Blue/Red', class: 'bg-blue-500', image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'White', class: 'bg-white', image: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p28',
+    name: 'Marshall Acton III Speaker',
+    brand: 'Marshall',
+    price: 24999,
+    mrp: 29999,
+    discount: 16,
+    rating: 4.6,
+    reviews: 1100,
+    image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Electronics',
+    colors: [
+      { name: 'Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Cream', class: 'bg-yellow-50', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p29',
+    name: 'Stanley Quencher H2.0 Tumbler',
+    brand: 'Stanley',
+    price: 4500,
+    mrp: 4999,
+    discount: 10,
+    rating: 4.7,
+    reviews: 15400,
+    image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400',
+    assured: false,
+    category: 'Home',
+    colors: [
+      { name: 'Eucalyptus', class: 'bg-emerald-600', image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Rose Quartz', class: 'bg-pink-200', image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p30',
+    name: 'Dyson Airwrap Multi-Styler',
+    brand: 'Dyson',
+    price: 49900,
+    mrp: 49900,
+    discount: 0,
+    rating: 4.8,
+    reviews: 3200,
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Beauty',
+    colors: [
+      { name: 'Nickel/Copper', class: 'bg-amber-700', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p31',
+    name: 'Hydro Flask 32 oz Wide Mouth',
+    brand: 'Hydro Flask',
+    price: 3800,
+    mrp: 4200,
+    discount: 9,
+    rating: 4.8,
+    reviews: 6250,
+    image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Sports',
+    colors: [
+      { name: 'Pacific Blue', class: 'bg-blue-600', image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Olive Green', class: 'bg-green-700', image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ]
+  },
+  {
+    id: 'p32',
+    name: 'LEGO Star Wars Millennium Falcon',
+    brand: 'LEGO',
+    price: 14999,
+    mrp: 17999,
+    discount: 16,
+    rating: 4.9,
+    reviews: 2150,
+    image: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=400',
+    assured: true,
+    category: 'Toys',
     colors: []
   }
 ];

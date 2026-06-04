@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Home, ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image } from 'lucide-react';
+import { Home, ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image, Tag, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -82,6 +82,12 @@ export default function Header() {
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
 
+  // User Auth states
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const accountDropdownRef = useRef(null);
+
   // Search & Speech Recognition States
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -107,7 +113,43 @@ export default function Header() {
   const cameraStreamRef = useRef(null);
   const cameraOptionsRef = useRef(null);
 
-  // Auto close suggestions and camera options on clicking outside
+  // Check user details from localStorage
+  const checkAuth = () => {
+    let logged = localStorage.getItem('elevate_is_logged_in');
+    if (logged === null) {
+      // Auto-login default user on first load
+      localStorage.setItem('elevate_is_logged_in', 'true');
+      localStorage.setItem('elevate_user', JSON.stringify({
+        name: 'Khushi Kumari',
+        email: 'khushi@elevate.com',
+        phone: '9876543210',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120',
+        gender: 'Female'
+      }));
+      logged = 'true';
+    }
+    const isLogged = logged === 'true';
+    setIsLoggedIn(isLogged);
+    if (isLogged) {
+      const stored = localStorage.getItem('elevate_user');
+      setUser(stored ? JSON.parse(stored) : { name: 'Khushi Kumari' });
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+    window.addEventListener('authChange', checkAuth);
+    // Also listen to storage events (e.g. from other tabs or pages updating localStorage)
+    window.addEventListener('storage', checkAuth);
+    return () => {
+      window.removeEventListener('authChange', checkAuth);
+      window.removeEventListener('storage', checkAuth);
+    };
+  }, []);
+
+  // Auto close suggestions, camera options, and account dropdown on clicking outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
@@ -115,6 +157,9 @@ export default function Header() {
       }
       if (cameraOptionsRef.current && !cameraOptionsRef.current.contains(e.target)) {
         setShowCameraOptions(false);
+      }
+      if (accountDropdownRef.current && !accountDropdownRef.current.contains(e.target)) {
+        setShowAccountDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleOutsideClick);
@@ -542,16 +587,103 @@ export default function Header() {
               <span className="hidden sm:block font-medium text-sm">Home</span>
             </Link>
 
-            <Link
-              to="/login"
-              className={`hidden md:flex items-center gap-1 font-medium text-sm px-3 py-2 rounded-lg transition-colors ${
-                isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <User className="h-5 w-5" />
-              <span>Login</span>
-              <ChevronDown className="h-4 w-4" />
-            </Link>
+            {isLoggedIn ? (
+              <div ref={accountDropdownRef} className="relative flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setShowAccountDropdown(!showAccountDropdown)}
+                  className={`flex items-center gap-1 font-medium text-sm px-2 py-2 sm:px-3 rounded-lg transition-colors ${
+                    isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                  }`}
+                >
+                  <User className="h-6 w-6 sm:h-5 sm:w-5" />
+                  <span className="hidden md:inline">{user?.name?.split(' ')[0] || 'Account'}</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showAccountDropdown ? 'rotate-180 text-brand-blue' : ''}`} />
+                </button>
+
+                <AnimatePresence>
+                  {showAccountDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 py-1.5 z-50 text-left"
+                    >
+                      <Link
+                        to="/account"
+                        state={{ tab: 'profile' }}
+                        onClick={() => setShowAccountDropdown(false)}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-bold"
+                      >
+                        <User className="w-3.5 h-3.5 text-gray-400" />
+                        My Profile
+                      </Link>
+                      <Link
+                        to="/account"
+                        state={{ tab: 'orders' }}
+                        onClick={() => setShowAccountDropdown(false)}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-bold"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5 text-gray-400" />
+                        Orders History
+                      </Link>
+                      <Link
+                        to="/account"
+                        state={{ tab: 'wishlist' }}
+                        onClick={() => setShowAccountDropdown(false)}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-bold"
+                      >
+                        <Heart className="w-3.5 h-3.5 text-gray-400" />
+                        Wishlist
+                      </Link>
+                      <Link
+                        to="/account"
+                        state={{ tab: 'coupons' }}
+                        onClick={() => setShowAccountDropdown(false)}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-bold"
+                      >
+                        <Tag className="w-3.5 h-3.5 text-gray-400" />
+                        My Coupons
+                      </Link>
+                      <Link
+                        to="/account"
+                        state={{ tab: 'help' }}
+                        onClick={() => setShowAccountDropdown(false)}
+                        className="w-full px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors flex items-center gap-2 font-bold"
+                      >
+                        <HelpCircle className="w-3.5 h-3.5 text-gray-400" />
+                        Help Center
+                      </Link>
+                      <div className="border-t border-gray-100 my-1" />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowAccountDropdown(false);
+                          localStorage.setItem('elevate_is_logged_in', 'false');
+                          window.dispatchEvent(new Event('authChange'));
+                          window.location.reload();
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2 font-bold"
+                      >
+                        <LogOut className="w-3.5 h-3.5 text-red-400" />
+                        Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className={`flex items-center gap-1 font-medium text-sm px-2 py-2 sm:px-3 rounded-lg transition-colors ${
+                  isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                }`}
+              >
+                <User className="h-6 w-6 sm:h-5 sm:w-5" />
+                <span className="hidden md:inline">Login</span>
+                <ChevronDown className="h-4 w-4" />
+              </Link>
+            )}
 
             <Link 
               to="/wishlist"

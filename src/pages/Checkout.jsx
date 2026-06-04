@@ -208,13 +208,41 @@ export default function Checkout() {
     }, 2000);
 
     setTimeout(() => {
+      const orderId = generateOrderId();
       setIsProcessing(false);
       setIsSuccess(true);
-      setSuccessOrderId(generateOrderId());
+      setSuccessOrderId(orderId);
       
       // Clear cart globally if order was from cart items
       if (!isDirectBuy) {
         clearCart();
+      }
+
+      // Persist order details to localStorage for Account Order History
+      try {
+        const newOrder = {
+          id: orderId,
+          date: new Date().toISOString(),
+          items: checkoutItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            mrp: item.mrp || item.price,
+            image: item.image,
+            quantity: item.quantity,
+            selectedColor: item.selectedColor
+          })),
+          totalPayable: totalPayable,
+          address: selectedAddress,
+          paymentMode: paymentMode,
+          status: 'Order Confirmed',
+          estimatedDelivery: 'Thursday, May 28th' // Match with the static tracking view estimation
+        };
+        const existingOrders = JSON.parse(localStorage.getItem('elevate_orders') || '[]');
+        existingOrders.unshift(newOrder);
+        localStorage.setItem('elevate_orders', JSON.stringify(existingOrders));
+      } catch (err) {
+        console.error('Failed to save order to localStorage:', err);
       }
 
       // Generate confetti

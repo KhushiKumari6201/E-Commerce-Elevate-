@@ -21,16 +21,40 @@ export default function Footer() {
               India's premium e-commerce destination. Experience the best products with fast delivery and unmatched customer service.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold">
+              <a 
+                id="elevate-fb"
+                href="https://elevate.com/fb" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold"
+              >
                 FB
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold">
+              <a 
+                id="elevate-tw"
+                href="https://elevate.com/tw" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold"
+              >
                 TW
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold">
+              <a 
+                id="elevate-ig"
+                href="https://elevate.com/ig" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold"
+              >
                 IG
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold">
+              <a 
+                id="elevate-yt"
+                href="https://elevate.com/yt" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-blue transition-colors font-bold"
+              >
                 YT
               </a>
             </div>

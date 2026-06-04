@@ -9,6 +9,7 @@ import Checkout from './pages/Checkout';
 import CategoryProducts from './pages/CategoryProducts';
 import Login from './pages/Login';
 import BecomeSeller from './pages/BecomeSeller';
+import Account from './pages/Account';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/become-seller" element={<BecomeSeller />} />
+                <Route path="/account" element={<Account />} />
               </Routes>
             </main>
             <Footer />

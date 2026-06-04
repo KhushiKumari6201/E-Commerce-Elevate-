@@ -13,7 +13,20 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/');
+    const displayName = form.name || (form.email ? form.email.split('@')[0] : 'Khushi Kumari');
+    const loggedInUser = {
+      name: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+      email: form.email || 'khushi@elevate.com',
+      phone: form.phone || '9876543210',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120'
+    };
+    localStorage.setItem('elevate_user', JSON.stringify(loggedInUser));
+    localStorage.setItem('elevate_is_logged_in', 'true');
+    
+    // Dispatch custom event to let header know login state has changed
+    window.dispatchEvent(new Event('authChange'));
+    
+    navigate('/account');
   };
 
   const benefits = [

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Home, ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image, Tag, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
@@ -77,6 +77,7 @@ const navCategories = [
 
 
 export default function Header() {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const { cartCount } = useCart();
@@ -90,6 +91,14 @@ export default function Header() {
 
   // Search & Speech Recognition States
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setShowSuggestions(false);
+    }
+  };
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState('');
@@ -419,10 +428,18 @@ export default function Header() {
           </Link>
 
           {/* Search Bar */}
-          <div ref={searchContainerRef} className="flex-1 max-w-2xl relative group">
-            <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none`}>
-              <Search className={`h-5 w-5 ${isScrolled ? 'text-gray-400' : 'text-brand-navy/60'}`} />
-            </div>
+          <form 
+            onSubmit={handleSearchSubmit} 
+            ref={searchContainerRef} 
+            className="flex-1 max-w-2xl relative group"
+          >
+            <button 
+              type="submit"
+              className="absolute inset-y-0 left-0 pl-3 flex items-center transition-transform hover:scale-105 active:scale-95"
+              title="Search"
+            >
+              <Search className={`h-5 w-5 ${isScrolled ? 'text-gray-400 hover:text-brand-blue' : 'text-brand-navy/60 hover:text-brand-blue'}`} />
+            </button>
             <input
               type="text"
               value={searchQuery}
@@ -531,17 +548,31 @@ export default function Header() {
                   className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 py-3 z-50 text-left"
                 >
                   <div className="px-4 py-1.5 text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 border-b border-gray-50 flex justify-between items-center">
-                    <span>Search Results ({suggestions.length})</span>
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setSearchQuery('');
-                        setShowSuggestions(false);
-                      }} 
-                      className="hover:text-red-500 font-bold text-xs"
-                    >
-                      Clear
-                    </button>
+                    <span>Suggestions ({suggestions.length})</span>
+                    <div className="flex items-center gap-3">
+                      {searchQuery.trim() && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                            setShowSuggestions(false);
+                          }}
+                          className="text-brand-blue hover:underline font-bold text-xs uppercase tracking-wider"
+                        >
+                          See all
+                        </button>
+                      )}
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery('');
+                          setShowSuggestions(false);
+                        }} 
+                        className="hover:text-red-500 font-bold text-xs"
+                      >
+                        Clear
+                      </button>
+                    </div>
                   </div>
                   {suggestions.length > 0 ? (
                     <div className="divide-y divide-gray-50 max-h-[300px] overflow-y-auto">
@@ -572,7 +603,7 @@ export default function Header() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </form>
 
           {/* Right Nav */}
           <div className="flex items-center gap-2 sm:gap-6">

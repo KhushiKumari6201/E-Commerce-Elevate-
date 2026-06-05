@@ -614,3 +614,58 @@ export const allProducts = [
 
 export const flashProducts = allProducts.filter(p => p.id.startsWith('f'));
 export const featuredProducts = allProducts.filter(p => p.id.startsWith('p'));
+
+export const playReels = [
+  {
+    id: 'r1',
+    category: 'Watches',
+    title: 'Trendy Wrist Watches',
+    discountLabel: 'Extra 20% Off',
+    creator: 'Prerna Kamboj',
+    creatorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400',
+    views: '1.2K',
+    likes: 850,
+    taggedProductId: 'f2'
+  },
+  {
+    id: 'r2',
+    category: 'Shoes',
+    title: 'Premium Sports Sneakers',
+    discountLabel: 'Extra 20% Off',
+    creator: 'Rahul Sharma',
+    creatorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400',
+    views: '3.4K',
+    likes: 2400,
+    taggedProductId: 'f3'
+  },
+  {
+    id: 'r3',
+    category: 'Fashion',
+    title: 'Designer Denim Styles',
+    discountLabel: 'Extra 20% Off',
+    creator: 'Sneha Roy',
+    creatorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?auto=format&fit=crop&q=80&w=400',
+    views: '2.8K',
+    likes: 1950,
+    taggedProductId: 'p2'
+  },
+  {
+    id: 'r4',
+    category: 'Mobiles',
+    title: 'Latest iPhone Tech',
+    discountLabel: 'Extra 20% Off',
+    creator: 'Khushi Kumari',
+    creatorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=120',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+    thumbnail: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400',
+    views: '5.1K',
+    likes: 4120,
+    taggedProductId: 'p1'
+  }
+];

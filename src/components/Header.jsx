@@ -657,23 +657,20 @@ export default function Header() {
               )}
             </Link>
 
-            {hasVideos && (
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams(location.search);
-                  params.set('playVideo', 'true');
-                  navigate({
-                    pathname: location.pathname,
-                    search: params.toString()
-                  });
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-sm bg-brand-orange text-white hover:bg-orange-600 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg animate-pulse"
-                title="Watch Product Video"
-              >
-                <PlayCircle className="h-5 w-5 fill-current" />
-                <span className="hidden sm:inline">Play Video</span>
-              </button>
-            )}
+            <Link 
+              to="/play"
+              className={`relative p-2 flex items-center gap-1 rounded-lg transition-colors ${
+                location.pathname === '/play'
+                  ? 'text-brand-yellow font-bold bg-white/10'
+                  : isScrolled 
+                    ? 'text-gray-700 hover:bg-gray-100' 
+                    : 'text-white hover:bg-white/10'
+              }`}
+              title="Play Reels"
+            >
+              <PlayCircle className="h-6 w-6" />
+              <span className="hidden sm:block font-medium text-sm">Play</span>
+            </Link>
 
             <Link 
               to="/cart"

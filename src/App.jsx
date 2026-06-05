@@ -8,6 +8,7 @@ import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
 import CategoryProducts from './pages/CategoryProducts';
 import SearchResults from './pages/SearchResults';
+import Play from './pages/Play';
 import Login from './pages/Login';
 import BecomeSeller from './pages/BecomeSeller';
 import Account from './pages/Account';
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/category/:categoryName" element={<CategoryProducts />} />
                 <Route path="/search" element={<SearchResults />} />
+                <Route path="/play" element={<Play />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/checkout" element={<Checkout />} />

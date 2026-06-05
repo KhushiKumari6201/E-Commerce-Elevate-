@@ -10,6 +10,8 @@ import CategoryProducts from './pages/CategoryProducts';
 import SearchResults from './pages/SearchResults';
 import Play from './pages/Play';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import BecomeSeller from './pages/BecomeSeller';
 import Account from './pages/Account';
 import { CartProvider } from './context/CartContext';
@@ -33,6 +35,8 @@ function App() {
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/become-seller" element={<BecomeSeller />} />
                 <Route path="/account" element={<Account />} />
               </Routes>

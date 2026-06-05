@@ -58,6 +58,17 @@ export default function ProductDetail() {
   const [activeVideo, setActiveVideo] = useState(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
 
+  // Rating & Review state hooks
+  const [currentRating, setCurrentRating] = useState(product ? product.rating : 4.5);
+  const [currentReviewsCount, setCurrentReviewsCount] = useState(product ? product.reviews : 150);
+  const [hasUserRated, setHasUserRated] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [userRatingStars, setUserRatingStars] = useState(0);
+  const [hoverRatingStars, setHoverRatingStars] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+
   const playVideoQuery = searchParams.get('playVideo') === 'true';
 
   useEffect(() => {
@@ -76,7 +87,7 @@ export default function ProductDetail() {
   };
 
   useEffect(() => {
-    if (showVideoModal) {
+    if (showVideoModal || isRatingModalOpen) {
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
@@ -84,7 +95,7 @@ export default function ProductDetail() {
     return () => {
       document.body.classList.remove('overflow-hidden');
     };
-  }, [showVideoModal]);
+  }, [showVideoModal, isRatingModalOpen]);
 
   // Sync state when product or query parameter changes
   useEffect(() => {
@@ -92,6 +103,28 @@ export default function ProductDetail() {
       const initialColor = getInitialColor();
       setActiveColor(initialColor);
       setActiveImage(initialColor?.image || product.image);
+      
+      // Load user rating from localStorage if it exists
+      const storedRatings = JSON.parse(localStorage.getItem('elevate_user_ratings') || '{}');
+      const userRating = storedRatings[product.id];
+      
+      if (userRating) {
+        setHasUserRated(true);
+        setUserRatingStars(userRating.stars);
+        setReviewComment(userRating.comment || '');
+        
+        // Calculate rating details incorporating user rating
+        const newReviewsCount = product.reviews + 1;
+        const newRating = ((product.rating * product.reviews) + userRating.stars) / newReviewsCount;
+        setCurrentRating(newRating);
+        setCurrentReviewsCount(newReviewsCount);
+      } else {
+        setHasUserRated(false);
+        setUserRatingStars(0);
+        setReviewComment('');
+        setCurrentRating(product.rating);
+        setCurrentReviewsCount(product.reviews);
+      }
     }
   }, [product, colorQuery]);
 
@@ -135,6 +168,38 @@ export default function ProductDetail() {
         }]
       }
     });
+  };
+
+  const handleRatingSubmit = (e) => {
+    e.preventDefault();
+    if (userRatingStars === 0) {
+      alert("Please select at least 1 star to submit your rating.");
+      return;
+    }
+
+    const storedRatings = JSON.parse(localStorage.getItem('elevate_user_ratings') || '{}');
+    const wasAlreadyRated = !!storedRatings[product.id];
+    
+    // Save to localStorage
+    storedRatings[product.id] = {
+      stars: userRatingStars,
+      comment: reviewComment
+    };
+    localStorage.setItem('elevate_user_ratings', JSON.stringify(storedRatings));
+
+    // Dynamic rating average update (re-calculate incorporating current stars selection)
+    const newReviewsCount = product.reviews + 1;
+    const newRating = ((product.rating * product.reviews) + userRatingStars) / newReviewsCount;
+
+    setCurrentRating(newRating);
+    setCurrentReviewsCount(newReviewsCount);
+    setHasUserRated(true);
+    setIsRatingModalOpen(false);
+
+    // Show success toast
+    setToastMessage(wasAlreadyRated ? "Your rating has been updated successfully!" : "Thank you! Your rating has been submitted successfully.");
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   // Compile unique images list dynamically from product and variants
@@ -254,11 +319,21 @@ export default function ProductDetail() {
             </h1>
             <p className="text-gray-500 text-lg mb-4">By {product.brand}</p>
             
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center bg-green-600 text-white px-2 py-1 rounded text-sm font-bold">
-                {product.rating} <Star className="w-4 h-4 ml-1 fill-current" />
-              </div>
-              <span className="text-gray-500 text-sm">{product.reviews.toLocaleString()} Ratings & {Math.floor(product.reviews / 10)} Reviews</span>
+            <div className="flex items-center gap-3.5 mb-6">
+              <button 
+                onClick={() => setIsRatingModalOpen(true)}
+                className="flex items-center bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-sm font-bold transition-colors shadow-sm active:scale-95 cursor-pointer"
+                title="Click to rate this product"
+              >
+                {hasUserRated ? userRatingStars.toFixed(1) : currentRating.toFixed(1)} <Star className="w-3.5 h-3.5 ml-1 fill-current text-white" />
+              </button>
+              <span className="text-gray-500 text-sm">{currentReviewsCount.toLocaleString()} Ratings & {Math.floor(currentReviewsCount / 10)} Reviews</span>
+              <button 
+                onClick={() => setIsRatingModalOpen(true)}
+                className="text-brand-orange border border-brand-orange/20 hover:bg-brand-orange hover:text-white bg-brand-orange/5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all active:scale-95 cursor-pointer flex items-center gap-1"
+              >
+                Rate Product
+              </button>
               {product.assured && (
                 <img src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/fa_62673a.png" className="h-5" alt="Assured" />
               )}
@@ -426,6 +501,107 @@ export default function ProductDetail() {
                   <PlayCircle className="w-4 h-4 fill-current" /> {activeVideo.type === 'youtube' ? 'YouTube Stream' : 'HD Native Playback'}
                 </div>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast Notification for rating success */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-brand-navy text-white text-xs font-bold px-5 py-3 rounded-full shadow-lg z-50 flex items-center gap-2"
+          >
+            <Check className="w-4 h-4 text-green-400 stroke-[3px]" />
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Rating & Review Modal */}
+      <AnimatePresence>
+        {isRatingModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 select-none">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl p-6 md:p-8 w-full max-w-md border border-gray-100 shadow-2xl relative text-left"
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => setIsRatingModalOpen(false)}
+                className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-500 hover:text-gray-700 transition-colors"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <h3 className="font-heading font-extrabold text-xl text-brand-navy mb-4 pr-6">
+                Rate & Review Product
+              </h3>
+
+              {/* Product Info Summary */}
+              <div className="flex items-center gap-3 bg-gray-50 p-3.5 rounded-2xl mb-6">
+                <img src={product.image} className="w-12 h-12 object-contain bg-white rounded-lg p-1 border border-gray-100 flex-shrink-0" alt={product.name} />
+                <div className="min-w-0">
+                  <h4 className="font-bold text-xs text-brand-navy truncate">{product.name}</h4>
+                  <p className="text-[10px] text-gray-400 font-medium">Brand: {product.brand}</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleRatingSubmit} className="space-y-5">
+                {/* Star Rating selector */}
+                <div className="text-center space-y-2">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Your Rating</span>
+                  <div className="flex justify-center items-center gap-2 py-2">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <Star 
+                        key={i}
+                        onClick={() => setUserRatingStars(i)}
+                        onMouseEnter={() => setHoverRatingStars(i)}
+                        onMouseLeave={() => setHoverRatingStars(0)}
+                        className={`w-8 h-8 cursor-pointer transition-all ${
+                          i <= (hoverRatingStars || userRatingStars)
+                            ? 'text-amber-400 fill-current scale-110'
+                            : 'text-gray-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {userRatingStars > 0 && (
+                    <span className="text-xs font-bold text-brand-orange animate-pulse">
+                      {userRatingStars === 1 && "Poor 😞"}
+                      {userRatingStars === 2 && "Fair 😐"}
+                      {userRatingStars === 3 && "Good 🙂"}
+                      {userRatingStars === 4 && "Very Good 😀"}
+                      {userRatingStars === 5 && "Excellent! 😍"}
+                    </span>
+                  )}
+                </div>
+
+                {/* Review Message */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Write a Review (Optional)</label>
+                  <textarea
+                    placeholder="Tell us what you like or dislike about this product..."
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    className="w-full border border-gray-200 px-4 py-3 text-sm rounded-xl focus:outline-none focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/15 transition-all bg-gray-50/50 h-24 resize-none font-medium"
+                  />
+                </div>
+
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  className="w-full bg-brand-orange hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-brand-orange/10 active:scale-99"
+                >
+                  Submit Rating
+                </button>
+              </form>
             </motion.div>
           </div>
         )}

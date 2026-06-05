@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, ShoppingBag, Shield, Gift } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, ShoppingBag, Shield, Gift } from 'lucide-react';
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,6 +20,12 @@ export default function Login() {
 
   const validate = () => {
     const newErrors = {};
+    if (!form.name.trim()) {
+      newErrors.name = 'Full name is required';
+    } else if (form.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+
     // Email regex check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!form.email) {
@@ -49,10 +55,9 @@ export default function Login() {
 
     // Simulate network delay
     setTimeout(() => {
-      // Mock login logic
-      const displayName = form.email.split('@')[0];
+      // Mock registration logic
       const loggedInUser = {
-        name: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+        name: form.name.trim(),
         email: form.email,
         phone: '9876543210',
         avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120'
@@ -94,10 +99,10 @@ export default function Login() {
             </Link>
 
             <h2 className="text-3xl font-heading font-extrabold mb-3 leading-tight">
-              Login
+              Sign Up
             </h2>
             <p className="text-white/80 text-sm mb-12 font-medium">
-              Get access to your Orders, Wishlist and Recommendations
+              Looks like you're new here! Sign up to get started
             </p>
 
             <div className="space-y-6 relative z-10">
@@ -130,11 +135,35 @@ export default function Login() {
               </div>
               <span className="font-heading font-extrabold text-lg tracking-wide text-brand-navy">Elevate</span>
             </Link>
-            <h2 className="text-2xl font-heading font-extrabold text-brand-navy">Login</h2>
-            <p className="text-gray-400 text-xs mt-1">Get access to your account details</p>
+            <h2 className="text-2xl font-heading font-extrabold text-brand-navy">Sign Up</h2>
+            <p className="text-gray-400 text-xs mt-1">Create an account to start shopping</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Full Name</label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Enter full name"
+                  value={form.name}
+                  onChange={handleChange}
+                  className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${
+                    errors.name ? 'border-red-500 focus:ring-red-100' : 'border-gray-200 focus:border-brand-orange focus:ring-brand-orange/15'
+                  } rounded-xl text-sm font-medium focus:outline-none focus:ring-4 transition-all`}
+                />
+              </div>
+              {errors.name && (
+                <p className="text-red-500 text-xs font-semibold flex items-center gap-1 mt-1">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500" />
+                  {errors.name}
+                </p>
+              )}
+            </div>
+
             {/* Email Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Email Address</label>
@@ -161,18 +190,13 @@ export default function Login() {
 
             {/* Password Input */}
             <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Password</label>
-                <Link to="/forgot-password" className="text-xs font-bold text-brand-orange hover:text-[#e05310] transition-colors">
-                  Forgot Password?
-                </Link>
-              </div>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                 <input
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter password"
+                  placeholder="Create password (min 6 characters)"
                   value={form.password}
                   onChange={handleChange}
                   className={`w-full pl-11 pr-11 py-3 bg-gray-50/50 border ${
@@ -207,7 +231,7 @@ export default function Login() {
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  Log In
+                  Sign Up
                   <ArrowRight className="w-4.5 h-4.5" />
                 </>
               )}
@@ -227,7 +251,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => alert("Google Sign-In is under review (UI only).")}
-              className="w-full border border-gray-250 bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-99"
+              className="w-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-99"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -235,15 +259,15 @@ export default function Login() {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Sign in with Google
+              Sign up with Google
             </button>
           </form>
 
-          {/* Redirection to Register */}
+          {/* Redirection to Login */}
           <p className="text-center text-sm font-medium text-gray-500 mt-8">
-            New to Elevate?{' '}
-            <Link to="/signup" className="text-brand-orange font-bold hover:underline">
-              Create an account
+            Existing User?{' '}
+            <Link to="/login" className="text-brand-orange font-bold hover:underline">
+              Log in
             </Link>
           </p>
 

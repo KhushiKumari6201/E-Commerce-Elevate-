@@ -15,6 +15,22 @@ export const allProducts = [
       { name: 'Titanium Black', class: 'bg-zinc-800', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=400', isAvailable: true },
       { name: 'Titanium Gray', class: 'bg-gray-400', image: 'https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&q=80&w=400', isAvailable: true },
       { name: 'Titanium Blue', class: 'bg-slate-700', image: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&q=80&w=400', isAvailable: false }
+    ],
+    videos: [
+      {
+        id: 'v1',
+        url: 'https://www.youtube.com/watch?v=xqyUdNxWnRY',
+        type: 'youtube',
+        thumbnail: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=120',
+        duration: '2:04'
+      },
+      {
+        id: 'v2',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        type: 'mp4',
+        thumbnail: 'https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&q=80&w=120',
+        duration: '0:15'
+      }
     ]
   },
   {
@@ -152,9 +168,18 @@ export const allProducts = [
     assured: true,
     category: 'Electronics',
     colors: [
-      { name: 'Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=400' },
-      { name: 'Silver', class: 'bg-gray-300', image: 'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?auto=format&fit=crop&q=80&w=400' },
-      { name: 'Midnight Blue', class: 'bg-blue-900', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400' }
+      { name: 'Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Silver', class: 'bg-gray-300', image: 'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?auto=format&fit=crop&q=80&w=400', isAvailable: true },
+      { name: 'Midnight Blue', class: 'bg-blue-900', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400', isAvailable: true }
+    ],
+    videos: [
+      {
+        id: 'v3',
+        url: 'https://www.youtube.com/watch?v=wuUXaD2oZQM',
+        type: 'youtube',
+        thumbnail: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=120',
+        duration: '1:30'
+      }
     ]
   },
   {
@@ -190,6 +215,15 @@ export const allProducts = [
       { name: 'Triple White', class: 'bg-white', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400', isAvailable: true },
       { name: 'Triple Black', class: 'bg-black', image: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&q=80&w=400', isAvailable: true },
       { name: 'White/Red', class: 'bg-red-500', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400', isAvailable: false }
+    ],
+    videos: [
+      {
+        id: 'v4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+        type: 'mp4',
+        thumbnail: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=120',
+        duration: '0:12'
+      }
     ]
   },
   {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Home, ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image, Tag, LogOut } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Home, ShoppingCart, Search, Mic, Camera, User, Heart, Menu, ChevronDown, Bell, AlertCircle, CheckCircle2, X, Image, Tag, LogOut, PlayCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -78,7 +78,14 @@ const navCategories = [
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Check if viewing a product page (every product has at least a fallback video now)
+  const pathMatch = location.pathname.match(/^\/product\/([^/]+)/);
+  const productId = pathMatch ? pathMatch[1] : null;
+  const currentProduct = productId ? allProducts.find(p => p.id === productId) : null;
+  const hasVideos = !!currentProduct;
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
@@ -649,6 +656,24 @@ export default function Header() {
                 </motion.span>
               )}
             </Link>
+
+            {hasVideos && (
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams(location.search);
+                  params.set('playVideo', 'true');
+                  navigate({
+                    pathname: location.pathname,
+                    search: params.toString()
+                  });
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-sm bg-brand-orange text-white hover:bg-orange-600 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg animate-pulse"
+                title="Watch Product Video"
+              >
+                <PlayCircle className="h-5 w-5 fill-current" />
+                <span className="hidden sm:inline">Play Video</span>
+              </button>
+            )}
 
             <Link 
               to="/cart"

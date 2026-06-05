@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Star, Shield, Truck, RotateCcw, Heart, Share2, ShoppingCart, Zap } from 'lucide-react';
+import { Check, Star, Shield, Truck, RotateCcw, Heart, Share2, ShoppingCart, Zap, Play, X, PlayCircle } from 'lucide-react';
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -17,6 +17,21 @@ export default function ProductDetail() {
 
   const product = allProducts.find(p => p.id === id) || allProducts[0];
   const isWishlisted = isInWishlist(product?.id);
+
+  // Dynamic fallback videos so all products have video content
+  const productVideos = useMemo(() => {
+    return product?.videos && product.videos.length > 0
+      ? product.videos
+      : [
+          {
+            id: 'v-default',
+            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+            type: 'mp4',
+            thumbnail: product?.image,
+            duration: '0:15'
+          }
+        ];
+  }, [product]);
 
   // Helper to retrieve initial active color
   const getInitialColor = () => {
@@ -40,6 +55,36 @@ export default function ProductDetail() {
   const [activeImage, setActiveImage] = useState(activeColor?.image || product?.image || '/headphone.png');
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
+  const [activeVideo, setActiveVideo] = useState(null);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+
+  const playVideoQuery = searchParams.get('playVideo') === 'true';
+
+  useEffect(() => {
+    if (playVideoQuery && product && productVideos.length > 0) {
+      setActiveVideo(productVideos[0]);
+      setShowVideoModal(true);
+    }
+  }, [playVideoQuery, product, productVideos]);
+
+  const handleCloseVideoModal = () => {
+    setShowVideoModal(false);
+    setActiveVideo(null);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('playVideo');
+    setSearchParams(newParams);
+  };
+
+  useEffect(() => {
+    if (showVideoModal) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [showVideoModal]);
 
   // Sync state when product or query parameter changes
   useEffect(() => {
@@ -173,6 +218,32 @@ export default function ProductDetail() {
                   <img src={img} className="w-full h-full object-contain mix-blend-multiply" />
                 </button>
               ))}
+
+              {productVideos.map((vid, idx) => (
+                <button 
+                  key={`vid-${idx}`}
+                  onClick={() => {
+                    setActiveVideo(vid);
+                    setShowVideoModal(true);
+                  }}
+                  className="w-20 h-20 rounded-xl border-2 border-gray-200 hover:border-brand-blue p-2 bg-white flex-shrink-0 relative overflow-hidden group shadow-sm flex items-center justify-center transition-all"
+                  title="Play Product Video"
+                >
+                  <img src={vid.thumbnail || product.image} className="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
+                  
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-colors group-hover:bg-black/50">
+                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md transform transition-transform group-hover:scale-110">
+                      <Play className="w-4 h-4 text-brand-orange fill-current ml-0.5" />
+                    </div>
+                  </div>
+
+                  {/* Duration Badge */}
+                  <div className="absolute bottom-1 right-1 bg-black/75 px-1.5 py-0.5 rounded text-[9px] font-bold font-mono text-white tracking-wider">
+                    {vid.duration}
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -301,6 +372,64 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Video Player Modal */}
+      <AnimatePresence>
+        {showVideoModal && activeVideo && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-brand-navy rounded-3xl overflow-hidden shadow-2xl w-full max-w-4xl border border-white/10 flex flex-col relative aspect-video"
+            >
+              {/* Close Button */}
+              <button 
+                onClick={handleCloseVideoModal}
+                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors border border-white/10"
+                title="Close Player"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Video Content */}
+              <div className="flex-1 w-full h-full relative bg-black flex items-center justify-center">
+                {activeVideo.type === 'youtube' ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${
+                      activeVideo.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
+                    }?autoplay=1&rel=0&modestbranding=1`}
+                    title="Product Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <video
+                    src={activeVideo.url}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-contain"
+                  />
+                )}
+              </div>
+              
+              {/* Bottom Bar Info */}
+              <div className="bg-brand-navy/90 p-4 border-t border-white/10 flex items-center justify-between text-white">
+                <div>
+                  <h4 className="font-heading font-bold text-sm truncate max-w-md">{product.name}</h4>
+                  <p className="text-xs text-gray-400">Duration: {activeVideo.duration}</p>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-semibold text-brand-orange bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full">
+                  <PlayCircle className="w-4 h-4 fill-current" /> {activeVideo.type === 'youtube' ? 'YouTube Stream' : 'HD Native Playback'}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

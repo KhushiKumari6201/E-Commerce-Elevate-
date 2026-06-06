@@ -1,15 +1,18 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { Check, Heart, Star, ShoppingCart, Sparkles } from 'lucide-react';
+import { Check, Heart, Star, ShoppingCart, Sparkles, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import ColorVariantPicker from './ColorVariantPicker';
+import ShareModal from './ShareModal';
 
 export default function ProductCard({ product, aiBadge = false }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const isWishlisted = isInWishlist(product.id);
   const [isAdded, setIsAdded] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const { addToCart } = useCart();
 
   // Initialize active color with the first available color, or the first color in the list, or null
@@ -46,6 +49,7 @@ export default function ProductCard({ product, aiBadge = false }) {
     : `/product/${product.id}`;
 
   return (
+    <>
     <div className="bg-white rounded-2xl p-4 transition-all duration-300 hover:shadow-3d-hover hover:-translate-y-2 group relative border border-gray-100 h-full flex flex-col">
       {/* Badges */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
@@ -70,6 +74,18 @@ export default function ProductCard({ product, aiBadge = false }) {
         className="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm"
       >
         <Heart className={`w-5 h-5 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
+      </button>
+
+      {/* Share Button */}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setShareOpen(true);
+        }}
+        className="absolute top-14 right-4 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-gray-400 hover:text-brand-blue transition-colors shadow-sm"
+        aria-label="Share product"
+      >
+        <Share2 className="w-4 h-4" />
       </button>
 
       {/* Image */}
@@ -174,5 +190,16 @@ export default function ProductCard({ product, aiBadge = false }) {
         </div>
       </div>
     </div>
+
+      {/* Share Modal — rendered via portal so it escapes card stacking context */}
+      {shareOpen && createPortal(
+        <ShareModal
+          product={product}
+          shareUrl={`${window.location.origin}${detailsUrl}`}
+          onClose={() => setShareOpen(false)}
+        />,
+        document.body
+      )}
+    </>
   );
 }
